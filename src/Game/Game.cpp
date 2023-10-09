@@ -8,6 +8,7 @@
 
 Game::Game() {
 	isRunning = false;
+	registry = new Registry();
 	Logger::Log("Game constructor called!");
 }
 
@@ -67,7 +68,8 @@ void Game::ProcessInput() {
 
 void Game::Setup() {
 	// TODO: Initialize game objects
-	
+	Entity tank = registry->CreateEntity();
+	Entity truck = registry->CreateEntity();
 }
 
 void Game::Update() {

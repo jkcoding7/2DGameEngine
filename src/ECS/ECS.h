@@ -7,9 +7,13 @@
 #include <typeindex>
 #include <set>
 #include <memory>
+#include <deque>
 
 const unsigned int MAX_COMPONENTS = 32;
 
+// Signature
+// We use a bitset (1s and 0s) to keep track of which components an entity has,
+// and also helps keep track of which entities a system is interested in.
 typedef std::bitset<MAX_COMPONENTS> Signature;
 
 struct IComponent {
@@ -34,6 +38,7 @@ class Entity {
 	public:
 		Entity(int id) : id(id) {};
 		Entity(const Entity& entity) = default;
+		void Kill();
 		int GetId() const;
 
 		Entity& operator =(const Entity& other) = default;
@@ -120,23 +125,26 @@ class Pool: public IPool {
 };
 
 class Registry {
-	int numEntities = 0;
+	private:
+		int numEntities = 0;
 
-	// Vector of component pools, each pool contains all the data for a certain component type
-	// Vector index = component type id
-	// Pool index = entity id
-	std::vector<std::shared_ptr<IPool>> componentPools;
+		// Vector of component pools, each pool contains all the data for a certain component type
+		// Vector index = component type id
+		// Pool index = entity id
+		std::vector<std::shared_ptr<IPool>> componentPools;
 
-	// Vector of component signatures per entity, saying which component is turned "on" for a given entity
-	// Vector index is the entity id
-	std::vector<Signature> entityComponentSignatures;
+		// Vector of component signatures per entity, saying which component is turned "on" for a given entity
+		// Vector index is the entity id
+		std::vector<Signature> entityComponentSignatures;
 
-	std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
+		std::unordered_map<std::type_index, std::shared_ptr<System>> systems;
 
-	// Set of entites that are flagged to be added or removed in the next registry Update()
-	std::set<Entity> entitiesToBeAdded;
-	std::set<Entity> entitiesToBeKilled;
+		// Set of entites that are flagged to be added or removed in the next registry Update()
+		std::set<Entity> entitiesToBeAdded;
+		std::set<Entity> entitiesToBeKilled;
 
+		// List of free entity ids that were previously removed
+		std::deque<int> freeIds;
 
 	public:
 		Registry() {
@@ -151,6 +159,7 @@ class Registry {
 
 		// Entity management
 		Entity CreateEntity();
+		void KillEntity(Entity entity);
 
 		//Component management
 		template <typename TComponent, typename ...TArgs> void AddComponent(Entity entity, TArgs&& ...args);
@@ -164,9 +173,9 @@ class Registry {
 		template <typename TSystem> bool HasSystem() const;
 		template <typename TSystem> TSystem& GetSystem() const;
 
-		// Checks the component signature of an entity and add the entity to the systems
-		// that are interested in it
+		// Add and remove entities from their systems
 		void AddEntityToSystems(Entity entity);
+		void RemoveEntityFromSystems(Entity entity);
 };
 
 template <typename TComponent>

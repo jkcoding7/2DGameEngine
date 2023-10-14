@@ -9,18 +9,18 @@ C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\MovementSyst
           [
               T=float
           ]
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(94,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(93,7): message : while compiling class template member function 'int Pool<AnimationComponent>::GetSize(void) const'
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(217,2): message : see the first reference to 'Pool<AnimationComponent>::GetSize' in 'Registry::AddComponent'
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(248): message : see reference to class template instantiation 'Pool<AnimationComponent>' being compiled
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(272,17): message : see reference to function template instantiation 'TComponent &Registry::GetComponent<AnimationComponent>(Entity) const' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(99,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(98,7): message : while compiling class template member function 'int Pool<BoxColliderComponent>::GetSize(void) const'
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(226,2): message : see the first reference to 'Pool<BoxColliderComponent>::GetSize' in 'Registry::AddComponent'
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(257): message : see reference to class template instantiation 'Pool<BoxColliderComponent>' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(281,17): message : see reference to function template instantiation 'TComponent &Registry::GetComponent<BoxColliderComponent>(Entity) const' being compiled
           with
           [
-              TComponent=AnimationComponent
+              TComponent=BoxColliderComponent
           ]
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\AnimationSystem.h(17,28): message : see reference to function template instantiation 'TComponent &Entity::GetComponent<AnimationComponent>(void) const' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\CollisionSystem.h(24,23): message : see reference to function template instantiation 'TComponent &Entity::GetComponent<BoxColliderComponent>(void) const' being compiled
           with
           [
-              TComponent=AnimationComponent
+              TComponent=BoxColliderComponent
           ]
   2DGameEngine.vcxproj -> C:\Users\Jun Soo\source\repos\2DGameEngine\x64\Debug\2DGameEngine.exe

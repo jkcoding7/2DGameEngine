@@ -1,8 +1,9 @@
 #pragma once
 
-#include <SDL.h>
 #include "../ECS/ECS.h"
 #include "../AssetStore/AssetStore.h"
+#include "../EventBus/EventBus.h"
+#include <SDL.h>
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -14,6 +15,7 @@ class Game {
 		int millisecsPreviousFrame = 0;
 		SDL_Window* window;
 		SDL_Renderer* renderer;
+		SDL_Rect camera;
 
 		std::unique_ptr<Registry> registry;
 		std::unique_ptr<AssetStore> assetStore;

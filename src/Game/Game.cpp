@@ -6,11 +6,16 @@
 #include "../Components/SpriteComponent.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/BoxColliderComponent.h"
+#include "../Components/KeyboardControlledComponent.h"
+#include "../Components/CameraFollowComponent.h"
 #include "../Systems/MovementSystem.h"
+#include "../Systems/CameraMovementSystem.h"
 #include "../Systems/RenderSystem.h"
 #include "../Systems/AnimationSystem.h"
 #include "../Systems/CollisionSystem.h"
 #include "../Systems/RenderColliderSystem.h"
+#include "../Systems/DamageSystem.h"
+#include "../Systems/KeyboardControlSystem.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <glm/glm.hpp>
@@ -22,6 +27,7 @@ Game::Game() {
 	isDebug = false;
 	registry = std::make_unique<Registry>();
 	assetStore = std::make_unique<AssetStore>();
+	eventBus = std::make_unique<EventBus>();
 	Logger::Log("Game constructor called!");
 }
 
@@ -31,13 +37,13 @@ Game::~Game() {
 
 void Game::Initialize() {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-		std::cerr << "Error initializing SDL." << std::endl;
+	Logger::Err("Error initializing SDL.");
 		return;
 	}
 	SDL_DisplayMode displayMode;
 	SDL_GetCurrentDisplayMode(0, &displayMode);
-	windowWidth = 800; //displayMode.w;
-	windowHeight = 600; //displayMode.h; 
+	windowWidth = displayMode.w;
+	windowHeight = displayMode.h;
 	window = SDL_CreateWindow(
 		NULL, 
 		SDL_WINDOWPOS_CENTERED, 
@@ -50,15 +56,18 @@ void Game::Initialize() {
 		Logger::Err("Error creating SDL window.");
 		return;
 	}
-	renderer = SDL_CreateRenderer(
-		window, 
-		-1, 
-		SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
-	);
+	renderer = SDL_CreateRenderer(window, -1, 0);
 	if (!renderer) {
 		Logger::Err("Error creating SDL renderer.");
+		return;
 	}
 	SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
+
+	// Initialize the camera view with the entire screen area
+	camera.x = 0;
+	camera.y = 0;
+	camera.w = windowWidth;
+	camera.h = windowHeight;
 
 	isRunning = true;
 }
@@ -77,6 +86,7 @@ void Game::ProcessInput() {
 				if (sdlEvent.key.keysym.sym == SDLK_d) {
 					isDebug = !isDebug;
 				}
+				eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
 				break;
 		}
 	}
@@ -89,11 +99,14 @@ void Game::LoadLevel(int level) {
 	registry->AddSystem<AnimationSystem>();
 	registry->AddSystem<CollisionSystem>();
 	registry->AddSystem<RenderColliderSystem>();
+	registry->AddSystem<DamageSystem>();
+	registry->AddSystem<KeyboardControlSystem>();
+	registry->AddSystem<CameraMovementSystem>();
 
 	//Adding assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
 	assetStore->AddTexture(renderer, "truck-image", "./assets/images/truck-ford-right.png");
-	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper.png");
+	assetStore->AddTexture(renderer, "chopper-image", "./assets/images/chopper-spritesheet.png");
 	assetStore->AddTexture(renderer, "radar-image", "./assets/images/radar.png");
 	assetStore->AddTexture(renderer, "tilemap-image", "./assets/tilemaps/jungle.png");
 
@@ -128,6 +141,8 @@ void Game::LoadLevel(int level) {
 	chopper.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	chopper.AddComponent<SpriteComponent>("chopper-image", 32, 32, 1);
 	chopper.AddComponent<AnimationComponent>(2, 15, true);
+	chopper.AddComponent<KeyboardControlledComponent>(glm::vec2(0, -80), glm::vec2(80, 0), glm::vec2(0, 80), glm::vec2(-80, 0));
+	chopper.AddComponent<CameraFollowComponent>();
 
 	Entity radar = registry->CreateEntity();
 	radar.AddComponent<TransformComponent>(glm::vec2(windowWidth - 74, 10.0), glm::vec2(1.0, 1.0), 0.0);
@@ -166,13 +181,21 @@ void Game::Update() {
 	// Store the current frame time
 	millisecsPreviousFrame = SDL_GetTicks();
 
+	// Reset all event handlers for the current frame
+	eventBus->Reset();
+
+	// Perform the subscription of the events for all systems
+	registry->GetSystem<DamageSystem>().SubscribeToEvents(eventBus);
+	registry->GetSystem<KeyboardControlSystem>().SubscribeToEvents(eventBus);
+
 	// Update the registry to process the entities that are waiting to be created/deleted
 	registry->Update();
 
 	// Invoke all the systems that need to update
 	registry->GetSystem<MovementSystem>().Update(deltaTime);
 	registry->GetSystem<AnimationSystem>().Update();
-	registry->GetSystem<CollisionSystem>().Update();
+	registry->GetSystem<CollisionSystem>().Update(eventBus);
+	registry->GetSystem<CameraMovementSystem>().Update(camera);
 }
 
 void Game::Render() {
@@ -180,7 +203,7 @@ void Game::Render() {
 	SDL_RenderClear(renderer);
 	
 	// Invoke all the systems that need to render
-	registry->GetSystem<RenderSystem>().Update(renderer, assetStore);
+	registry->GetSystem<RenderSystem>().Update(renderer, assetStore, camera);
 	if (isDebug) {
 		registry->GetSystem<RenderColliderSystem>().Update(renderer);
 	}

@@ -56,6 +56,10 @@ class EventBus {
 			Logger::Log("EventBus destructor called!");
 		}
 
+		// Clears the subscribers list
+		void Reset() {
+			subscribers.clear();
+		}
 		// Subscribe to an event type <T>
 		// A listener subscribes to an event
 		// Example: eventBus->SubscribeToEvent<CollisionEvent>(this, &Game::onCollision);

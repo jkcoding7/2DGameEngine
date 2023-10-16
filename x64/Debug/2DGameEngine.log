@@ -9,18 +9,27 @@ C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\MovementSyst
           [
               T=float
           ]
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\CameraMovementSystem.h(21,34): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\CameraMovementSystem.h(22,34): warning C4244: '=': conversion from 'T' to 'int', possible loss of data
+          with
+          [
+              T=float
+          ]
 C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(99,20): warning C4267: 'return': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(98,7): message : while compiling class template member function 'int Pool<BoxColliderComponent>::GetSize(void) const'
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(226,2): message : see the first reference to 'Pool<BoxColliderComponent>::GetSize' in 'Registry::AddComponent'
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(257): message : see reference to class template instantiation 'Pool<BoxColliderComponent>' being compiled
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(281,17): message : see reference to function template instantiation 'TComponent &Registry::GetComponent<BoxColliderComponent>(Entity) const' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(98,7): message : while compiling class template member function 'int Pool<CameraFollowComponent>::GetSize(void) const'
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(226,2): message : see the first reference to 'Pool<CameraFollowComponent>::GetSize' in 'Registry::AddComponent'
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\type_traits(334,39): message : see reference to class template instantiation 'Pool<CameraFollowComponent>' being compiled
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.36.32532\include\memory(1505): message : see reference to class template instantiation 'std::is_convertible<_Yty *,_Ty *>' being compiled
           with
           [
-              TComponent=BoxColliderComponent
+              _Yty=Pool<CameraFollowComponent>,
+              _Ty=IPool
           ]
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\CollisionSystem.h(24,23): message : see reference to function template instantiation 'TComponent &Entity::GetComponent<BoxColliderComponent>(void) const' being compiled
-          with
-          [
-              TComponent=BoxColliderComponent
-          ]
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(211): message : see reference to class template instantiation 'std::_SP_pointer_compatible<Pool<CameraFollowComponent>,IPool>' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\ECS\ECS.h(266,10): message : see reference to function template instantiation 'void Registry::AddComponent<CameraFollowComponent,>(Entity)' being compiled
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(145,9): message : see reference to function template instantiation 'void Entity::AddComponent<CameraFollowComponent,>(void)' being compiled
   2DGameEngine.vcxproj -> C:\Users\Jun Soo\source\repos\2DGameEngine\x64\Debug\2DGameEngine.exe

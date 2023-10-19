@@ -23,11 +23,15 @@
 #include "../Systems/ProjectileLifecycleSystem.h"
 #include "../Systems/RenderTextSystem.h"
 #include "../Systems/RenderHealthBarSystem.h"
+#include "../Systems/RenderGUISystem.h"
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <glm/glm.hpp>
 #include <iostream>
+#include <imgui/imgui.h>
+#include <imgui/imgui_sdl.h>
+#include <imgui/imgui_impl_sdl.h>
 #include <fstream>
 
 int Game::windowWidth;
@@ -79,6 +83,10 @@ void Game::Initialize() {
 		return;
 	}
 
+	// Initialize the ImGui context
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(renderer, windowWidth, windowHeight);
+
 	// Initialize the camera view with the entire screen area
 	camera.x = 0;
 	camera.y = 0;
@@ -91,6 +99,16 @@ void Game::Initialize() {
 void Game::ProcessInput() {
 	SDL_Event sdlEvent;
 	while (SDL_PollEvent(&sdlEvent)) {
+		// ImGui SDL input
+		ImGui_ImplSDL2_ProcessEvent(&sdlEvent);
+		ImGuiIO& io = ImGui::GetIO();
+		int mouseX, mouseY;
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+		io.MousePos = ImVec2(mouseX, mouseY);
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+		// Handle core SDL events (close window, key pressed, etc.)
 		switch (sdlEvent.type) {
 			case SDL_QUIT:
 				isRunning = false;
@@ -99,7 +117,7 @@ void Game::ProcessInput() {
 				if (sdlEvent.key.keysym.sym == SDLK_ESCAPE) {
 					isRunning = false;
 				}
-				if (sdlEvent.key.keysym.sym == SDLK_d) {
+				if (sdlEvent.key.keysym.sym == SDLK_F1) {
 					isDebug = !isDebug;
 				}
 				eventBus->EmitEvent<KeyPressedEvent>(sdlEvent.key.keysym.sym);
@@ -122,6 +140,7 @@ void Game::LoadLevel(int level) {
 	registry->AddSystem<ProjectileLifecycleSystem>();
 	registry->AddSystem<RenderTextSystem>();
 	registry->AddSystem<RenderHealthBarSystem>();
+	registry->AddSystem<RenderGUISystem>();
 
 	//Adding assets to the asset store
 	assetStore->AddTexture(renderer, "tank-image", "./assets/images/tank-panther-right.png");
@@ -186,7 +205,7 @@ void Game::LoadLevel(int level) {
 	tank.AddComponent<TransformComponent>(glm::vec2(500.0, 500.0), glm::vec2(1.0, 1.0), 0.0);
 	tank.AddComponent<RigidBodyComponent>(glm::vec2(0.0, 0.0));
 	tank.AddComponent<SpriteComponent>("tank-image", 32, 32, 1);
-	tank.AddComponent<BoxColliderComponent>(32, 32);
+	tank.AddComponent<BoxColliderComponent>(25, 18, glm::vec2(5, 7));
 	tank.AddComponent<ProjectileEmitterComponent>(glm::vec2(100.0, 0.0), 5000, 3000, 10, false);
 	tank.AddComponent<HealthComponent>(100);
 
@@ -252,6 +271,7 @@ void Game::Render() {
 	registry->GetSystem<RenderHealthBarSystem>().Update(renderer, assetStore, camera);
 	if (isDebug) {
 		registry->GetSystem<RenderColliderSystem>().Update(renderer, camera);
+		registry->GetSystem<RenderGUISystem>().Update(registry, camera);
 	}
 	SDL_RenderPresent(renderer);
 }
@@ -266,6 +286,8 @@ void Game::Run() {
 }
 
 void Game::Destroy() {
+	ImGuiSDL::Deinitialize();
+	ImGui::DestroyContext();
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();

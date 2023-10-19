@@ -21,6 +21,9 @@ C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\CameraMoveme
           ]
 C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\ProjectileEmitSystem.h(77,61): warning C4018: '>': signed/unsigned mismatch
 C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\ProjectileLifecycleSystem.h(16,47): warning C4018: '>': signed/unsigned mismatch
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(162,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(163,36): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Systems\RenderGUISystem.h(92,29): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(107,32): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(107,24): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(181,35): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+C:\Users\Jun Soo\source\repos\2DGameEngine\2DGameEngine\src\Game\Game.cpp(182,36): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
   2DGameEngine.vcxproj -> C:\Users\Jun Soo\source\repos\2DGameEngine\x64\Debug\2DGameEngine.exe

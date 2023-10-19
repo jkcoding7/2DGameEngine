@@ -133,6 +133,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="libs\imgui\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\AssetStore\AssetStore.cpp" />
     <ClCompile Include="src\ECS\ECS.cpp" />
     <ClCompile Include="src\Game\Game.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="src\Main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="libs\imgui\imgui_impl_sdl.h" />
     <ClInclude Include="src\AssetStore\AssetStore.h" />
     <ClInclude Include="src\Components\AnimationComponent.h" />
     <ClInclude Include="src\Components\BoxColliderComponent.h" />
@@ -428,6 +430,7 @@
     <ClInclude Include="src\Systems\ProjectileEmitSystem.h" />
     <ClInclude Include="src\Systems\ProjectileLifecycleSystem.h" />
     <ClInclude Include="src\Systems\RenderColliderSystem.h" />
+    <ClInclude Include="src\Systems\RenderGUISystem.h" />
     <ClInclude Include="src\Systems\RenderHealthBarSystem.h" />
     <ClInclude Include="src\Systems\RenderSystem.h" />
     <ClInclude Include="src\Systems\RenderTextSystem.h" />
